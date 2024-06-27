@@ -1,42 +1,43 @@
 use crate::structs::Stack;
 
-pub fn postfix(expression: &str) -> String {
-    let input: Vec<&str> = expression.split(' ').collect();
+fn handle_operator(operation: &str, output: &mut Stack<String>, operators: &mut Stack<char>) {
+    if let Some(operator) = operation.chars().next() {
+        match operator {
+            '(' => {
+                operators.push(operator);
+            }
+            ')' => {
+                // TODO
+            }
+            '+' | '-' => {
+                // TODO
+            }
+            '*' | '/' | '%' => {
+                // TODO
+            }
+            '^' => {}
+            _ => return,
+        }
+        output.push(operator.to_string());
+    }
+}
 
+pub fn postfix(expression: &str) -> Stack<String> {
     let mut output: Stack<String> = Stack::new();
     let mut operators: Stack<char> = Stack::new();
 
-    for text in input {
-        match text.parse::<f32>() {
-            Ok(number) => {
-                output.push(number.to_string());
-            }
-            Err(_) => {
-                if let Some(operator) = text.chars().collect::<Vec<char>>().first() {
-                    output.push(operator.to_string());
-                }
-            }
+    let input: Vec<&str> = expression.split_whitespace().collect();
+
+    for operation in input {
+        match operation.parse::<f32>() {
+            Ok(number) => output.push(number.to_string()),
+            Err(_) => handle_operator(operation, &mut output, &mut operators),
         }
     }
 
-    for _ in 0..operators.get().len() {
-        if let Some(operator) = operators.pop() {
-            output.push(operator.to_string());
-        }
+    while let Some(operator) = operators.pop() {
+        output.push(operator.to_string());
     }
 
-    output.get().join(" ")
+    output
 }
-
-// mod tests {
-//     #[test]
-//     fn postfix() {
-//         const EXPRESSION: &str = "3 + 4 * 2 / ( 1 - 5 ) ^ 2";
-//         const RESULT: &str = "3 4 2 * 1 5 - 2 ^ / +";
-    
-//         assert_eq!(
-//             RESULT,
-//             crate::notations::postfix(EXPRESSION),
-//         );
-//     }
-// }

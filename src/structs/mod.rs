@@ -4,9 +4,7 @@ pub struct Stack<T> {
 
 impl<T> Stack<T> {
     pub fn new() -> Self {
-        Stack {
-            stack: Vec::new(),
-        }
+        Stack { stack: Vec::new() }
     }
 
     pub fn get(&self) -> &Vec<T> {
