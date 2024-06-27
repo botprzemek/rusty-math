@@ -1,9 +1,8 @@
-use super::notations::postfix_expression;
+use crate::structs::Stack;
 
-mod structs;
+pub fn postfix(expression: &str) -> String {
+    let input: Vec<&str> = expression.split(' ').collect();
 
-pub fn postfix_expression(expression: &str) -> Stack<String> {
-    let input: Vec<&str> = expression.split(" ").collect();
     let mut output: Stack<String> = Stack::new();
     let mut operators: Stack<char> = Stack::new();
 
@@ -13,8 +12,8 @@ pub fn postfix_expression(expression: &str) -> Stack<String> {
                 output.push(number.to_string());
             }
             Err(_) => {
-                if let Some(operator) = text.chars().collect::<Vec<char>>().get(0) {
-                    println!("Operator: {}", operator);
+                if let Some(operator) = text.chars().collect::<Vec<char>>().first() {
+                    output.push(operator.to_string());
                 }
             }
         }
@@ -26,5 +25,18 @@ pub fn postfix_expression(expression: &str) -> Stack<String> {
         }
     }
 
-    return output;
+    output.get().join(" ")
 }
+
+// mod tests {
+//     #[test]
+//     fn postfix() {
+//         const EXPRESSION: &str = "3 + 4 * 2 / ( 1 - 5 ) ^ 2";
+//         const RESULT: &str = "3 4 2 * 1 5 - 2 ^ / +";
+    
+//         assert_eq!(
+//             RESULT,
+//             crate::notations::postfix(EXPRESSION),
+//         );
+//     }
+// }
