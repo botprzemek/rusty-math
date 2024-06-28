@@ -23,7 +23,7 @@ fn handle_operator(operation: &str, output: &mut Stack<String>, operators: &mut 
                         '+' | '-' | '*' | '/' | '%' | '^' => {
                             output.push((*top).to_string());
                             operators.pop();
-                        },
+                        }
                         _ => {
                             break;
                         }
@@ -38,7 +38,7 @@ fn handle_operator(operation: &str, output: &mut Stack<String>, operators: &mut 
                         '*' | '/' | '%' | '^' => {
                             output.push((*top).to_string());
                             operators.pop();
-                        },
+                        }
                         _ => {
                             break;
                         }
@@ -49,15 +49,12 @@ fn handle_operator(operation: &str, output: &mut Stack<String>, operators: &mut 
             }
             '^' => {
                 while let Some(top) = operators.top() {
-                    match *top {
-                        '^' => {
-                            output.push((*top).to_string());
-                            operators.pop();
-                        },
-                        _ => {
-                            break;
-                        }
+                    if *top != '^' {
+                        break;
                     }
+
+                    output.push((*top).to_string());
+                    operators.pop();
                 }
 
                 operators.push(operator);
