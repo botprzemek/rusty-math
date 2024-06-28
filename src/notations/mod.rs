@@ -7,50 +7,57 @@ fn handle_operator(operation: &str, output: &mut Stack<String>, operators: &mut 
                 operators.push(operator);
             }
             ')' => {
-                while let Some(top) = operators.pop() {
-                    if top == '(' {
+                while let Some(top) = operators.top() {
+                    if *top == '(' {
+                        operators.pop();
                         break;
                     }
 
-                    output.push(top.to_string());
+                    output.push((*top).to_string());
+                    operators.pop();
                 }
             }
             '+' | '-' => {
-                while let Some(top) = operators.pop() {
-                    if top == '(' {
-                        break;
-                    }
-
-                    match top {
-                        '+' | '-' | '*' | '/' | '%' | '^' => output.push(top.to_string()),
-                        _ => {}
+                while let Some(top) = operators.top() {
+                    match *top {
+                        '+' | '-' | '*' | '/' | '%' | '^' => {
+                            output.push((*top).to_string());
+                            operators.pop();
+                        },
+                        _ => {
+                            break;
+                        }
                     }
                 }
 
                 operators.push(operator);
             }
             '*' | '/' | '%' => {
-                while let Some(top) = operators.pop() {
-                    if top == '(' {
-                        break;
-                    }
-
-                    match top {
-                        '+' | '-' => {
-                            operators.push(top);
-                            operators.push(operator);
+                while let Some(top) = operators.top() {
+                    match *top {
+                        '*' | '/' | '%' | '^' => {
+                            output.push((*top).to_string());
+                            operators.pop();
+                        },
+                        _ => {
                             break;
                         }
-                        '*' | '/' | '%' | '^' => output.push(top.to_string()),
-                        _ => {}
                     }
                 }
 
                 operators.push(operator);
             }
             '^' => {
-                while let Some(top) = operators.pop() {
-                    output.push(top.to_string());
+                while let Some(top) = operators.top() {
+                    match *top {
+                        '^' => {
+                            output.push((*top).to_string());
+                            operators.pop();
+                        },
+                        _ => {
+                            break;
+                        }
+                    }
                 }
 
                 operators.push(operator);
@@ -71,9 +78,6 @@ pub fn postfix(expression: &str) -> Stack<String> {
             Ok(number) => output.push(number.to_string()),
             Err(_) => handle_operator(operation, &mut output, &mut operators),
         }
-
-        println!("Output: {:?}", output.get());
-        println!("Stack: {:?}", operators.get());
     }
 
     while let Some(operator) = operators.pop() {

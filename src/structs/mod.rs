@@ -18,4 +18,8 @@ impl<T> Stack<T> {
     pub fn push(&mut self, item: T) {
         self.stack.push(item);
     }
+
+    pub fn top(&self) -> Option<&T> {
+        self.stack.last()
+    }
 }
