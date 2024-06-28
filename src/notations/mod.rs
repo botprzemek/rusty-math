@@ -1,66 +1,41 @@
 use crate::structs::Stack;
 
-fn handle_operator(operation: &str, output: &mut Stack<String>, operators: &mut Stack<char>) {
-    if let Some(operator) = operation.chars().next() {
-        match operator {
-            '(' => {
-                operators.push(operator);
-            }
-            ')' => {
-                while let Some(top) = operators.top() {
-                    if *top == '(' {
-                        operators.pop();
-                        break;
-                    }
+fn get_precedence(operator: char) -> u8 {
+    match operator {
+        '+' | '-' => 1,
+        '*' | '/' | '%' => 2,
+        '^' => 3,
+        _ => 0,
+    }
+}
 
-                    output.push((*top).to_string());
-                    operators.pop();
-                }
-            }
-            '+' | '-' => {
-                while let Some(top) = operators.top() {
-                    match *top {
-                        '+' | '-' | '*' | '/' | '%' | '^' => {
-                            output.push((*top).to_string());
-                            operators.pop();
-                        }
-                        _ => {
-                            break;
-                        }
-                    }
+fn handle_operator(operator: char, output: &mut Stack<String>, operators: &mut Stack<char>) {
+    match operator {
+        '+' | '-' | '*' | '/' | '%' | '^' => {
+            while let Some(top) = operators.top() {
+                if get_precedence(*top) < get_precedence(operator) {
+                    break;
                 }
 
-                operators.push(operator);
+                output.push((*top).to_string());
+                operators.pop();
             }
-            '*' | '/' | '%' => {
-                while let Some(top) = operators.top() {
-                    match *top {
-                        '*' | '/' | '%' | '^' => {
-                            output.push((*top).to_string());
-                            operators.pop();
-                        }
-                        _ => {
-                            break;
-                        }
-                    }
-                }
 
-                operators.push(operator);
-            }
-            '^' => {
-                while let Some(top) = operators.top() {
-                    if *top != '^' {
-                        break;
-                    }
-
-                    output.push((*top).to_string());
-                    operators.pop();
-                }
-
-                operators.push(operator);
-            }
-            _ => output.push(operator.to_string()),
+            operators.push(operator);
         }
+        ')' => {
+            while let Some(top) = operators.top() {
+                if *top == '(' {
+                    operators.pop();
+                    break;
+                }
+
+                output.push((*top).to_string());
+                operators.pop();
+            }
+        }
+        '(' => operators.push(operator),
+        _ => output.push(operator.to_string()),
     }
 }
 
@@ -68,12 +43,14 @@ pub fn postfix(expression: &str) -> Stack<String> {
     let mut output: Stack<String> = Stack::new();
     let mut operators: Stack<char> = Stack::new();
 
-    let input: Vec<&str> = expression.split_whitespace().collect();
-
-    for operation in input {
-        match operation.parse::<f32>() {
+    for token in expression.split_whitespace() {
+        match token.parse::<f32>() {
             Ok(number) => output.push(number.to_string()),
-            Err(_) => handle_operator(operation, &mut output, &mut operators),
+            Err(_) => {
+                if let Some(operator) = token.chars().next() {
+                    handle_operator(operator, &mut output, &mut operators)
+                }
+            },
         }
     }
 

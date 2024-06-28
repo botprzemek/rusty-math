@@ -4,7 +4,7 @@ mod structs;
 mod tests;
 
 fn main() {
-    let expression = "3 + 4 * 2 / ( 1 - 5 ) ^ 2";
+    let expression = "12 + a * ( b * c + d / e )";
     let result = notations::postfix(expression);
 
     println!("Result: {}", result.get().join(" "));
