@@ -7,14 +7,6 @@ impl<T> Stack<T> {
         Stack { stack: Vec::new() }
     }
 
-    pub fn clear(&mut self) {
-        self.stack.clear()
-    }
-
-    pub fn is_empty(&self) -> bool {
-        self.stack.is_empty()
-    }
-
     pub fn get(&self) -> &Vec<T> {
         &self.stack
     }

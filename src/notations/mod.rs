@@ -41,11 +41,10 @@ fn handle_operator(operator: String, output: &mut Stack<String>, operators: &mut
 }
 
 pub fn postfix(expression: String) -> Stack<String> {
-    let parsed: Stack<String> = parse_expression(expression);
     let mut output: Stack<String> = Stack::new();
     let mut operators: Stack<String> = Stack::new();
 
-    parsed
+    parse_expression(expression)
         .get()
         .iter()
         .for_each(|operator| handle_operator(operator.to_string(), &mut output, &mut operators));
