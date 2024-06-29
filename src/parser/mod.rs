@@ -1,7 +1,16 @@
 use crate::structs::Stack;
 
+fn operator_is_valid(character: char) -> bool {
+    match character {
+        '0'..='9' | 'a'..='z' | 'A'..='Z' | '(' | ')' | '+' | '-' | '*' | '/' | '%' | '^' | '.' => {
+            true
+        }
+        _ => false,
+    }
+}
+
 fn determine_character(operator: char, parsed: &mut Stack<String>, cache: &mut String) {
-    if operator.is_whitespace() {
+    if !operator_is_valid(operator) {
         return;
     }
 
