@@ -1,7 +1,8 @@
+use crate::parser::parse_expression;
 use crate::structs::Stack;
 
-fn get_precedence(operator: &str) -> u8 {
-    match operator {
+fn get_precedence(operator: String) -> i8 {
+    match operator.as_str() {
         "+" | "-" => 1,
         "*" | "/" | "%" => 2,
         "^" => 3,
@@ -9,19 +10,19 @@ fn get_precedence(operator: &str) -> u8 {
     }
 }
 
-fn handle_operator<'a>(operator: &'a str, output: &mut Stack<&'a str>, operators: &mut Stack<&'a str>) {
-    match operator {
+fn handle_operator(operator: String, output: &mut Stack<String>, operators: &mut Stack<String>) {
+    match operator.as_str() {
         "+" | "-" | "*" | "/" | "%" | "^" => {
             while let Some(top) = operators.top() {
-                if get_precedence(*top) < get_precedence(operator) {
+                if get_precedence(top.to_string()) < get_precedence(operator.to_string()) {
                     break;
                 }
 
-                output.push(*top);
+                output.push(top.to_string());
                 operators.pop();
             }
 
-            operators.push(operator);
+            operators.push(operator.to_string());
         }
         ")" => {
             while let Some(top) = operators.top() {
@@ -30,22 +31,24 @@ fn handle_operator<'a>(operator: &'a str, output: &mut Stack<&'a str>, operators
                     break;
                 }
 
-                output.push(*top);
+                output.push(top.to_string());
                 operators.pop();
             }
         }
-        "(" => operators.push(operator),
-        _ => output.push(operator),
+        "(" => operators.push(operator.to_string()),
+        _ => output.push(operator.to_string()),
     }
 }
 
-pub fn postfix(expression: &str) -> Stack<&str> {
-    let mut output: Stack<&str> = Stack::new();
-    let mut operators: Stack<&str> = Stack::new();
+pub fn postfix(expression: String) -> Stack<String> {
+    let parsed: Stack<String> = parse_expression(expression);
+    let mut output: Stack<String> = Stack::new();
+    let mut operators: Stack<String> = Stack::new();
 
-    expression
-        .split_whitespace()
-        .for_each(| operator| handle_operator(operator, &mut output, &mut operators));
+    parsed
+        .get()
+        .iter()
+        .for_each(|operator| handle_operator(operator.to_string(), &mut output, &mut operators));
 
     while let Some(operator) = operators.pop() {
         output.push(operator);
