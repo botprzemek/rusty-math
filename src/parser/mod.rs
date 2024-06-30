@@ -1,4 +1,4 @@
-use crate::structs::Stack;
+use crate::structures::Stack;
 
 fn operator_is_valid(character: char) -> bool {
     match character {

@@ -55,3 +55,15 @@ pub fn quadratic(a: f64, b: f64, c: f64) {
     x1(a, b, delta);
     x2(a, b, delta);
 }
+
+pub fn horner(degree: i64, x: f64, coefficients: &[f64]) -> f64 {
+    let mut result: f64 = 0.0;
+
+    for i in 0..=degree {
+        if let Some(coefficient) = coefficients.get(i as usize) {
+            result = result * x + coefficient;
+        }
+    }
+
+    result
+}

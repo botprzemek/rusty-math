@@ -1,5 +1,5 @@
 use crate::parser::parse_expression;
-use crate::structs::Stack;
+use crate::structures::Stack;
 
 fn get_precedence(operator: String) -> i8 {
     match operator.as_str() {
